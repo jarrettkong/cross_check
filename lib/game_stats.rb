@@ -20,26 +20,38 @@ module GameStats
   end
 
   def percentage_home_wins
-    @games.select do |game|
+    (@games.select do |game|
       game['outcome'].include?('home win')
-    end.length.to_f / @games.length
+    end.length.to_f / @games.length).round(2)
   end
 
   def percentage_visitor_wins
-    @games.select do |game|
+    (@games.select do |game|
       game['outcome'].include?('away win')
-    end.length.to_f / @games.length
+    end.length.to_f / @games.length).round(2)
   end
 
   def count_of_games_by_season
-    @games.inject({}) do |acc, game|
+    @games.each_with_object({}) do |game, acc|
       acc[game['season']] = 0 unless acc[game['season']]
       acc[game['season']] += 1
-      acc
     end
   end
 
-  def average_goals_per_game; end
+  def average_goals_per_game
+    @games.inject(0) do |acc, game|
+      acc + game['home_goals'].to_i + game['away_goals'].to_i
+    end / @games.length.to_f
+  end
 
-  def average_goals_by_season; end
+  def average_goals_by_season
+    total_goals = @games.each_with_object({}) do |game, acc|
+      acc[game['season']] = 0 unless acc[game['season']]
+      acc[game['season']] += game['home_goals'].to_i + game['away_goals'].to_i
+    end
+
+    total_goals.map do |season, goals|
+      [season, goals.to_f / (@games.select { |game| game['season'] == season }).length]
+    end.to_h
+   end
 end
