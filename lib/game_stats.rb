@@ -1,10 +1,14 @@
 module GameStats
   def highest_total_score
-
+    @games.map do |game|
+      game["home_goals"].to_i + game["away_goals"].to_i
+    end.max
   end
 
   def lowest_total_score
-    
+    @games.map do |game|
+      game["home_goals"].to_i + game["away_goals"].to_i
+    end.min
   end
 
   def biggest_blowout
@@ -31,7 +35,4 @@ module GameStats
     
   end
 
-  def self.from_csv(locations)
-
-  end
 end
