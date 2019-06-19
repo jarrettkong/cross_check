@@ -41,7 +41,7 @@ module GameStats
   def average_goals_per_game
     (@games.inject(0) do |acc, game|
       acc + game['home_goals'].to_i + game['away_goals'].to_i
-    end / @games.length.to_f).round(2)
+    end.to_f / @games.length).round(2)
   end
 
   def average_goals_by_season
